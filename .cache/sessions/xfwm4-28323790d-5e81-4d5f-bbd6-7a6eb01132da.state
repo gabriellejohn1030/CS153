@@ -1,0 +1,13 @@
+[CLIENT] 0x200000f
+  [CLIENT_ID] 28db45efe-48c6-42de-a39b-f68cad54a830
+  [CLIENT_LEADER] 0x2000001
+  [WINDOW_ROLE] browser
+  [RES_NAME] Navigator
+  [RES_CLASS] Firefox
+  [WM_NAME] Submitted Files for Programming Assignment 3 | Gradescope - Mozilla Firefox
+  [WM_COMMAND] (1) "firefox"
+  [GEOMETRY] (0,60,1440,681)
+  [GEOMETRY-MAXIMIZED] (0,102,1280,639)
+  [SCREEN] 0
+  [DESK] 0
+  [FLAGS] 0x10380

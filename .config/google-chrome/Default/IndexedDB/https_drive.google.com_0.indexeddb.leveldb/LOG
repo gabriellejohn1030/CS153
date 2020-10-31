@@ -1,0 +1,49 @@
+2019/11/20-19:45:34.085 476f Reusing MANIFEST /home/csmajs/gjohn010/.config/google-chrome/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/MANIFEST-000001
+2019/11/20-19:45:34.086 476f Recovering log #29
+2019/11/20-19:45:34.091 476f Reusing old log /home/csmajs/gjohn010/.config/google-chrome/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/000029.log 
+2019/11/20-19:45:38.405 6573 Level-0 table #33: started
+2019/11/20-19:45:38.421 6573 Level-0 table #33: 4223751 bytes OK
+2019/11/20-19:45:38.423 6573 Delete type=0 #29
+2019/11/20-21:25:01.104 6573 Level-0 table #35: started
+2019/11/20-21:25:01.124 6573 Level-0 table #35: 4224927 bytes OK
+2019/11/20-21:25:01.125 6573 Delete type=0 #32
+2019/11/20-22:45:01.156 6573 Level-0 table #37: started
+2019/11/20-22:45:01.178 6573 Level-0 table #37: 4491498 bytes OK
+2019/11/20-22:45:01.180 6573 Delete type=0 #34
+2019/11/20-22:45:01.181 6573 Compacting 4@0 + 1@1 files
+2019/11/20-22:45:01.205 6573 Generated table #38@0: 571 keys, 1397140 bytes
+2019/11/20-22:45:01.205 6573 Compacted 4@0 + 1@1 files => 1397140 bytes
+2019/11/20-22:45:01.206 6573 compacted to: files[ 0 1 1 0 0 0 0 ]
+2019/11/20-22:45:01.206 6573 Delete type=2 #28
+2019/11/20-22:45:01.206 6573 Delete type=2 #30
+2019/11/20-22:45:01.206 6573 Delete type=2 #35
+2019/11/20-22:45:01.206 6573 Delete type=2 #33
+2019/11/20-22:45:01.206 6573 Delete type=2 #37
+2019/11/21-06:15:15.193 6573 Compacting 1@1 + 1@2 files
+2019/11/21-06:15:15.206 6573 Generated table #39@1: 69 keys, 1392173 bytes
+2019/11/21-06:15:15.206 6573 Compacted 1@1 + 1@2 files => 1392173 bytes
+2019/11/21-06:15:15.207 6573 compacted to: files[ 0 0 1 0 0 0 0 ]
+2019/11/21-06:15:15.207 6573 Delete type=2 #38
+2019/11/21-06:15:15.207 6573 Delete type=2 #5
+2019/11/21-10:05:24.461 6573 Level-0 table #41: started
+2019/11/21-10:05:24.482 6573 Level-0 table #41: 4780326 bytes OK
+2019/11/21-10:05:24.484 6573 Delete type=0 #36
+2019/11/21-11:55:28.899 6573 Level-0 table #43: started
+2019/11/21-11:55:28.920 6573 Level-0 table #43: 4244080 bytes OK
+2019/11/21-11:55:28.921 6573 Delete type=0 #40
+2019/11/21-17:05:41.169 6573 Level-0 table #45: started
+2019/11/21-17:05:41.190 6573 Level-0 table #45: 4663955 bytes OK
+2019/11/21-17:05:41.191 6573 Delete type=0 #42
+2019/11/22-08:56:16.464 6573 Compacting 2@0 + 1@1 files
+2019/11/22-08:56:16.480 6573 Generated table #46@0: 185 keys, 1400046 bytes
+2019/11/22-08:56:16.481 6573 Compacted 2@0 + 1@1 files => 1400046 bytes
+2019/11/22-08:56:16.481 6573 compacted to: files[ 0 1 1 0 0 0 0 ]
+2019/11/22-08:56:16.481 6573 Delete type=2 #43
+2019/11/22-08:56:16.481 6573 Delete type=2 #45
+2019/11/22-08:56:16.481 6573 Delete type=2 #41
+2019/11/22-17:16:33.410 6573 Compacting 1@1 + 1@2 files
+2019/11/22-17:16:33.419 6573 Generated table #47@1: 69 keys, 1402375 bytes
+2019/11/22-17:16:33.419 6573 Compacted 1@1 + 1@2 files => 1402375 bytes
+2019/11/22-17:16:33.419 6573 compacted to: files[ 0 0 1 0 0 0 0 ]
+2019/11/22-17:16:33.420 6573 Delete type=2 #39
+2019/11/22-17:16:33.420 6573 Delete type=2 #46

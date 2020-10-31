@@ -1,0 +1,12 @@
+2019/11/19-20:57:59.973 401c Reusing MANIFEST /home/csmajs/gjohn010/.config/google-chrome/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/MANIFEST-000001
+2019/11/19-20:57:59.973 401c Recovering log #25
+2019/11/19-20:57:59.973 401c Reusing old log /home/csmajs/gjohn010/.config/google-chrome/Default/IndexedDB/https_drive.google.com_0.indexeddb.leveldb/000025.log 
+2019/11/19-20:58:05.542 4da4 Compacting 1@0 + 1@1 files
+2019/11/19-20:58:05.553 4da4 Generated table #28@0: 502 keys, 1357833 bytes
+2019/11/19-20:58:05.553 4da4 Compacted 1@0 + 1@1 files => 1357833 bytes
+2019/11/19-20:58:05.554 4da4 compacted to: files[ 0 1 1 0 0 0 0 ]
+2019/11/19-20:58:05.554 4da4 Delete type=2 #24
+2019/11/19-20:58:05.554 4da4 Delete type=2 #26
+2019/11/19-20:58:43.034 4da4 Level-0 table #30: started
+2019/11/19-20:58:43.057 4da4 Level-0 table #30: 4641557 bytes OK
+2019/11/19-20:58:43.058 4da4 Delete type=0 #25

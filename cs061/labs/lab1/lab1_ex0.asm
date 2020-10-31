@@ -1,0 +1,63 @@
+;=================================================
+; Name: Gabrielle John
+; Email: gjohn010@ucr.edu
+; 
+; Lab: lab 1, ex 0
+; Lab section: 025
+; TA: Robert Colvin 
+; 
+;=================================================
+
+.ORIG x3000
+	LD R7,GETNUM_TSR
+	JSRR R7
+	
+	
+	HALT
+;local data
+GETNUM_TSR .FILL x3200
+	
+
+.orig x3200
+	ST R7,R7_BACKUP_3200
+	ST R1,R1_BACKUP_3200
+	ST R2,R2_BACKUP_3200
+	
+START				;LOAD CHAR INTO R0
+	LDI R1,KBSR
+	BRzp START
+	LDI R0, KBDR
+ECHO				;OUTPUT CHAR IN RO
+	LDI R1, DSR
+	BRzp ECHO
+	STI R0, DDR
+	BR NEXT_TASK
+
+NEXT_TASK			;RETURN ACTUAL VAL OUTPUTTED IN R0
+	ADD R4,R0,#0
+	LD R3,ASCII_TO_DEC
+	ADD R2,R4,R3
+	ADD R0,R2,#0
+	
+	LD R7,R7_BACKUP_3200
+	LD R1,R1_BACKUP_3200
+	LD R2,R2_BACKUP_3200
+	
+	RET
+	
+;SUB DATA
+ASCII_TO_DEC .FILL #-48
+R7_BACKUP_3200 .BLKW #1
+R1_BACKUP_3200 .BLKW #1
+R2_BACKUP_3200 .BLKW #1
+KBSR .FILL xFE00
+KBDR .FILL xFE02
+DSR .FILL xFE04
+DDR .FILL xFE06
+	
+.END
+	
+	
+	
+	
+	

@@ -1,0 +1,553 @@
+// NOTE: this controller controls the resource table for a single resource section 
+// eg. for Homework, Lecture Notes etc
+
+var ResourceCollectionController = Spine.Controller.sub({
+  BASE_URL: "/class_profile/get_resource/",
+  DEFAULT_NUMBER_RESOURCES: 50,
+  
+  /* Pagination variables */
+  DEFAULT_PAGE_LENGTH_RESOURCES: 50,
+  CURRENT_PAGE_RESOURCES: 0,
+  current_page_length_resources: null,
+  disabled_pagination: true,
+  
+  events: {
+    "click .btn_add_link"         : "open_add_link_modal",
+    "click .btn_confirm_add_link" : "add_link",
+    "click #show_more_resources"  : "view_more_resources",
+    "click #show_less_resources"  : "view_less_resources",
+    "click .resource_pagination_toggle.next_page"  : "next_page",
+    "click .resource_pagination_toggle.previous_page"  : "previous_page"
+  },
+  elements: {
+    ".title_wrapper"                : "title_wrapper",
+    "tbody"                         : "tbody",
+    ".tutorial"                     : "tutorial",
+    ".table"                        : "table",
+    ".container_add"                : "container_add",
+    ".btn_add_file"                 : "btn_add_file",
+    ".add_link_modal"               : "add_link_modal",
+    "input.link_title"              : "input_link_title",
+    "input.link_address"            : "input_link_address",
+    "#public-resources-alert"       : "public_resources_alert",
+    ".number_of_resources_wrapper"  : "number_of_resources_wrapper",
+    "#number_of_resources_shown"    : "number_of_resources_shown",
+    "#number_of_total_resources"    : "number_of_total_resources",
+    "#show_more_resources"          : "show_more_resources",
+    "#show_less_resources"          : "show_less_resources",
+    "#resource_table_footer"        : "resource_table_footer",
+    ".resource_pagination_toggle.next_page": "resource_next_page",
+    ".resource_pagination_toggle.previous_page": "resource_previous_page",
+    
+    ".resource_pagination"          : "resource_pagination_top",
+    ".resource_pagination_bottom"   : "resource_pagination_bottom",
+    
+    ".page_boundary.starting"       : "page_boundary_starting_ui",
+    ".page_boundary.ending"         : "page_boundary_ending_ui",
+    ".page_boundary.total"          : "page_boundary_total_ui"
+  },
+  init: function() {
+    if (this.visibility || (this.user_type != "public" && this.user_type != "logged_in"))  {
+      this.item.bind("processed", this.proxy(this.add_all));
+      this.expanded_view = false;
+    }
+  },
+  render: function() {
+    this.replace(ich.tpl_resource_section(this.item));
+
+    if (!this.visibility && (this.user_type == "public" || this.user_type == "logged_in")) {
+      this.table.hide();
+      this.public_resources_alert.removeClass("hide");
+    }
+
+    return this;
+  },
+  
+  get_page_length: function() {
+    if (this.current_page_length_resources == null) {
+      this.current_page_length_resources = this.DEFAULT_PAGE_LENGTH_RESOURCES;
+    }
+    return this.current_page_length_resources;
+  },
+
+  // returns how many resources are associated with this section (including hidden ones)
+  get_total_resources_count: function() {
+    return ((this.item || {}).resources || []).length;
+  },
+  
+  has_more_than_one_page: function() {
+    return this.get_total_resources_count() > this.get_page_length();
+  },
+  
+  has_pagination: function() {
+    return !this.disabled_pagination && this.has_more_than_one_page();
+  },
+  
+  // renders the next page of resources in this table
+  next_page: function() {
+    if (!this.has_next_page()) {
+      return;
+    }
+    this.CURRENT_PAGE_RESOURCES += 1;
+    if(document.body.scrollTop > this.title_wrapper.offset().top) {
+      document.body.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    //cause firefox and ie suck
+    else if(document.documentElement.scrollTop > this.title_wrapper.offset().top) {
+      document.documentElement.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    this.render_page();
+  },
+  
+  // renders the previous page in this table
+  previous_page: function() {
+    if (!this.has_previous_page()) {
+      return;
+    }
+    this.CURRENT_PAGE_RESOURCES -= 1;
+    if(document.body.scrollTop > this.title_wrapper.offset().top) {
+      document.body.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    //cause firefox and ie suck
+    else if(document.documentElement.scrollTop > this.title_wrapper.offset().top) {
+      document.documentElement.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    this.render_page();
+  },
+  
+  has_next_page: function() {
+    var total =  this.get_total_resources_count();
+    var num_consumed = this.get_current_page_index_bounds().end + 1;
+    return total - num_consumed > 0;
+  },
+  
+  has_previous_page: function() {
+    return this.CURRENT_PAGE_RESOURCES > 0;
+  },
+  
+  // returns start index and end index for current page that should be showing 
+  // will return the min of total contents and the largest possible position 
+  // possible in the current page
+  get_current_page_index_bounds: function() {
+    var page_index = this.CURRENT_PAGE_RESOURCES;
+    var page_length = this.get_page_length();
+    var start = (page_index) * page_length;
+    var end = Math.min(
+        (start + page_length - 1), // max possible for this page 
+        (this.get_total_resources_count() - 1) // max possible ever
+    );
+    return {
+      start: start,
+      end: end
+    }
+  },
+  
+  // ensure the pagination ui shows if needed, hidden if not 
+  // as well as any show more / show fewer ui elements 
+  update_pagination_ui: function() {
+    
+    if (this.has_pagination()) {
+      
+      this.resource_pagination_top.show();
+      this.resource_pagination_bottom.show();
+      
+      var bounds = this.get_current_page_index_bounds();
+      this.page_boundary_starting_ui.html(bounds.start + 1);
+      this.page_boundary_ending_ui.html(bounds.end + 1);
+      this.page_boundary_total_ui.html(this.get_total_resources_count());
+      
+      this.show_more_resources.show();
+      
+      if (!this.has_next_page()) {
+        this.resource_next_page.addClass("disabled");
+        this.resource_previous_page.removeClass("disabled");
+      }
+      else if(!this.has_previous_page()) {
+        this.resource_next_page.removeClass("disabled");
+        this.resource_previous_page.addClass("disabled");
+      }
+      else {
+        this.resource_next_page.removeClass("disabled");
+        this.resource_previous_page.removeClass("disabled");
+      }
+      
+    } else {
+      
+      this.resource_table_footer.hide();
+      this.resource_pagination_top.hide();
+      this.resource_pagination_bottom.hide();
+      
+      if (this.has_more_than_one_page()) {
+        this.resource_table_footer.show();
+        this.show_less_resources.show();
+      } else {
+        this.show_less_resources.hide();
+      }
+      
+    };
+    
+  },
+  
+  // wipes out all the resource item html from the table element
+  clear_page: function() {
+    this.tbody.empty();
+  },
+  
+  // re renders and shows all items in the current page
+  // if pagination is disabled, will display all items
+  render_page: function() {
+    this.clear_page();
+    this.add_all();
+  },
+  tutorial_show: function() {
+    this.table.hide();
+    this.tutorial.removeClass("hide");
+  },
+  tutorial_hide: function() {
+    this.table.show();
+    this.tutorial.addClass("hide");
+  },
+  open_add_link_modal: function() {
+    this.add_link_modal.modal('show');
+    this.add_link_modal.removeClass("hide");
+  },
+  validate_link: function(link) {
+    var reg = /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+    return link.match(reg);
+  },
+  add_link: function() {
+    var _this = this;
+
+    var title = this.input_link_title.val();
+    title = title.replace(/&/g,"&amp;");
+    var address = this.input_link_address.val();
+
+    if (title.length == 0) {
+      $(".error_text").html("Please input a subject");
+      $(".error_text").show();
+    } else if (!this.validate_link(address)) {
+      $(".error_text").html("Invalid link. Please provide a complete url beginning with http:// or ftp://");
+      $(".error_text").show();
+    } else {
+      var params = {type : "resource", nid : this.item.nid, subject : title, content : address, config : {section : this.item.id, date : "", resource_type : "link"}};
+      PA.call_pj("content.create", params, 1, function (theData) {
+        var resource = {
+          id: theData.id,
+          subject: title,
+          url: address,
+          config: {
+            date: "",
+            section: _this.item.id,
+            resource_type : "link"
+          },
+          resource_type: "link",
+          created: (new Date()).toISOString()
+        }
+        resource_instance = _this.item.add_resource(resource)
+        _this.add_one(resource_instance, false, true)
+
+        _this.input_link_title.val("");
+        _this.input_link_address.val("");
+        _this.add_link_modal.modal('hide');
+        _this.add_link_modal.addClass("hide");
+
+        $(".error_text").html("An error occurred");
+        $(".error_text").hide();
+
+        Spine.trigger("resource_reorder", true);
+      }, function (err) {
+        $(".error_text").html(err);
+        $(".error_text").show();
+      });
+      //if (PA && PA.isUserNewInstructor()) { PA.log_action("course_homepage_add_link"); }
+    }
+
+    return false;
+  },
+  
+  // only adds resources for current page start and length
+  add_all: function() {
+    var resource, _i, _j, _len, _ref, _this = this;
+    var page_bounds = this.get_current_page_index_bounds();
+    
+    var visible_start_idx = page_bounds.start;
+    var visible_end_idx = page_bounds.end;
+    if (!this.has_pagination()) {
+      visible_start_idx = 0;
+      visible_end_idx = this.get_total_resources_count() - 1;
+    }
+    var num_added = 0;
+
+    if (this.item.resources.length === 0) {
+      this.tutorial_show();
+    } else {
+      _ref = this.item.resources;
+      if (this.ordering && this.ordering.length > 0) { /* User has reordered resources, use that ordering */
+        var resource_id;
+        
+        /* Place all the resources that are stored in the ordering first */
+        for (_i = 0; _i < this.ordering.length; _i++) {
+          
+          // resource to place 
+          resource_id = this.ordering[_i];
+
+          // get resource item by id in list of all resources 
+          for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+            resource = _ref[_j];
+            if (resource.id === resource_id) {
+              var visible = num_added >= visible_start_idx && num_added <= visible_end_idx;
+              this.add_one(resource, !visible);
+              num_added++;
+              break;
+            }
+          }
+          
+        }
+
+        /* If there are any additional resources which do not have an ordering, append them here. */
+        if (this.ordering.length < _ref.length) {
+          
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {  
+            resource = _ref[_i];
+            if (jQuery.inArray(resource.id, this.ordering) == -1) {
+              var visible = num_added >= visible_start_idx && num_added <= visible_end_idx;
+              this.add_one(resource, !visible);
+              num_added++;
+            }
+          }
+        }
+      } else { /* Just use whatever order backend returned */
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          
+          resource = _ref[_i];
+          var visible = num_added >= visible_start_idx && num_added <= visible_end_idx;
+          this.add_one(resource, !visible);
+          num_added++;
+          
+        }
+      }
+    }
+    
+    this.update_pagination_ui();
+
+    if (this.user_type == "prof") {
+      var _this = this;
+      if (!window.NEED_UPLOAD_INIT) window.NEED_UPLOAD_INIT = [];
+      window.NEED_UPLOAD_INIT.push(_this);
+      var _ref = this.item.resources;
+
+      if (_ref.length > 1) {
+        this.tbody.find('.reorder_resource').removeClass('hide');
+
+         /* enable drag-drop */
+        this.tbody.sortable({
+          handle: ".reorder_resource",
+          axis: "y",
+          snap: true,
+          placeholder: 'ui-state-highlight',
+          tolerance: 'pointer',
+          start: function (event, block) {
+            $('.ui-state-highlight').css({
+              'width':$(block.helper).outerWidth(),
+              'height':$(block.helper).outerHeight(),
+            });
+
+            _this.table.removeClass('table-striped');
+            _this.tbody.children('.ui-state-default').each(function(index) {
+              $(this).css({ opacity: 0.6 });
+            });
+            block.helper.css({ opacity: 1.0 });
+          },
+          stop: function (event, ui) {
+            _this.table.addClass('table-striped');
+            _this.tbody.children('.ui-state-default').each(function(index) {
+              $(this).css({ opacity: 1.0 });
+            });
+
+            Spine.trigger("resource_reorder", false);
+          },
+          forceHelperSize: true,
+          helper: function (e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function(index) {
+              /* Width adjustion to make rows align while dragging */
+              var offset = 0;
+              switch (index) {
+                case 0: offset = 1; break;
+                case 2: offset = 3; break;
+              }
+
+              $(this).width($originals.eq(index).width() - offset);
+              $(this).removeClass("req_inst");
+            });
+
+            return $helper;
+          },
+        }).disableSelection();
+      }
+    }
+
+    Spine.unbind("processed");
+    return this;
+  },
+  add_one: function(resource, hide_resource, prepend) {
+    var view, view_el;
+    view = new ResourceController({
+      item: resource
+    });
+    view_el = view.render().el;
+    if (hide_resource) {
+      view_el.addClass('hide');
+      view_el.attr('hide_on_collapse', true);
+    }
+    if (this.user_type == "prof" && resource.resource_type == "file") {
+      if (!window.NEED_UPLOAD_INIT) window.NEED_UPLOAD_INIT = [];
+      window.NEED_UPLOAD_INIT.push(view);
+    }
+    if (prepend) this.tbody.prepend(view_el)
+    else this.tbody.append(view_el);
+
+    this.tutorial_hide();
+    return view_el;
+  },
+  // shows all resources
+  view_more_resources: function() {
+    this.number_of_resources_shown.html(this.item.resources.length);
+    this.show_more_resources.hide();
+    this.show_less_resources.show();
+    this.disabled_pagination = true;
+    this.tbody.children('.resource_row').removeClass('hide');
+    this.expanded_view = true;
+    this.render_page();
+    return false;
+  },
+  // return to pagination view 
+  view_less_resources: function() {
+    this.number_of_resources_shown.html(this.DEFAULT_NUMBER_RESOURCES);
+    this.show_less_resources.hide();
+    this.show_more_resources.show();
+    this.disabled_pagination = false;
+    this.tbody.children('.resource_row[hide_on_collapse=true]').addClass('hide');
+    this.expanded_view = false;
+    if(document.body.scrollTop > this.title_wrapper.offset().top) {
+      document.body.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    //cause firefox and ie suck
+    else if(document.documentElement.scrollTop > this.title_wrapper.offset().top) {
+      document.documentElement.scrollTop = this.title_wrapper.offset().top - 20;  
+    }
+    this.render_page();
+    return false;
+  },
+  open_add_link_modal: function() {
+    this.add_link_modal.modal('show');
+    this.add_link_modal.removeClass("hide");
+  },
+  init_add_resources: function(_this) {
+    _this.uploader = new plupload.Uploader({
+      runtimes: 'html5, silverlight, html4',
+      browse_button: 'add_file_' + this.item.id,
+      container: 'container_add_file_' + this.item.id,
+      max_file_size: '100mb',
+      url: '/class_profile/add_resource',
+      multipart_params: {
+        nid: this.item.nid,
+        section: this.item.id
+      },
+      silverlight_xap_url: '/third_party/plupload/js/plupload.silverlight.xap'
+    });
+  },
+  init_uploader_handlers: function(_this) {
+    var form;
+
+    form = _this.container_add.find("form");
+    form.width(_this.btn_add_file.outerWidth());
+    form.height(_this.btn_add_file.outerHeight());
+
+    _this.uploader.bind('FilesAdded', function(up, files) {
+      var file, resource, resource_instance, _i, _len;
+      up.refresh();
+      up.start();
+      for (_i = 0, _len = files.length; _i < _len; _i++) {
+        file = files[_i];
+        if (file.status === plupload.FAILED) continue;
+        resource = {
+          id: file.id,
+          subject: file.name, //.replace(/(.*)\.\w+$/, "$1"),
+          config: {
+            date: "",
+            section: _this.item.id
+          },
+          resource_type: "file",
+          is_file: true,
+          created: (new Date()).toISOString()
+        };
+        resource_instance = _this.item.add_resource(resource);
+        _this.add_one(resource_instance, false, true);
+        resource_instance.trigger("upload_start");
+      }
+    });
+
+    _this.uploader.bind('Error', function(up, err) {
+      var res;
+      Alert.create({
+        title: "Error uploading file",
+        text: err.message
+      });
+      try {
+        res = Resource.find(err.file.id);
+        res.destroy();
+      } catch (_error) {}
+    });
+
+    _this.uploader.bind('FileUploaded', function(up, file, response) {
+      var res, resource;
+      _this.el.removeClass("saving");
+      response = $.parseJSON(response.response);
+      if (response.error) {
+        Alert.create({
+          title: "Error uploading file",
+          text: response.result
+        });
+      } else {
+        resource = response.result;
+      }
+      try {
+        res = Resource.find(file.id);
+        if (response.error) {
+          res.destroy();
+        } else {
+          res.changeID(resource.id);
+          var url = "" + _this.BASE_URL + _this.item.nid + "/" + resource.id;
+          res.updateAttribute("url", url);
+          res.trigger("upload_finish");
+
+          Spine.trigger("resource_reorder", true);
+          //if (PA && PA.isUserNewInstructor()) { PA.log_action("course_homepage_upload_resource"); }
+        }
+      } catch (_error) {}
+    });
+  }
+});
+Ú…¶"6²      ]¯¸Ð]¯¸Ð@ð?Í]Ø—P   ^    :https://piazza.com/javascripts/piazza/class_profile/controllers/resource_collection.js?v=2613 necko:classified 1 strongly-framed 1 security-info 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 request-method GET response-head HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Cache-Control: max-age=2678400
+Content-Type: application/javascript
+Date: Wed, 23 Oct 2019 02:20:00 GMT
+ETag: "5dadf1d8-46ea"
+Expires: Sat, 23 Nov 2019 02:20:00 GMT
+Last-Modified: Mon, 21 Oct 2019 17:58:48 GMT
+Server: nginx
+Content-Length: 18154
+ original-response-headers Accept-Ranges: bytes
+Cache-Control: max-age=2678400
+Content-Type: application/javascript
+Date: Wed, 23 Oct 2019 02:20:00 GMT
+ETag: "5dadf1d8-46ea"
+Expires: Sat, 23 Nov 2019 02:20:00 GMT
+Last-Modified: Mon, 21 Oct 2019 17:58:48 GMT
+Server: nginx
+Content-Length: 18154
+Connection: keep-alive
+ ctid 2 eTLD1Access 1;0;1234166969, uncompressed-len 0 net-response-time-onstart 319 net-response-time-onstop 320   Fê

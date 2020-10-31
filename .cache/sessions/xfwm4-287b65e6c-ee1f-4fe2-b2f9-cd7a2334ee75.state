@@ -1,0 +1,47 @@
+[CLIENT] 0x1c00006
+  [CLIENT_LEADER] 0x1c00001
+  [RES_NAME] geany
+  [RES_CLASS] Geany
+  [WM_NAME] assignment4.asm - /home/csmajs/gjohn010/cs061/assignments/assn4 - Geany
+  [WM_COMMAND] (1) "geany"
+  [GEOMETRY] (0,60,800,491)
+  [GEOMETRY-MAXIMIZED] (228,72,900,600)
+  [SCREEN] 0
+  [DESK] 0
+  [FLAGS] 0x10300
+[CLIENT] 0x1e00002
+  [CLIENT_ID] 256f4cbde-4347-45d0-bcab-848d3595946f
+  [CLIENT_LEADER] 0x1e00001
+  [WINDOW_ROLE] xfce4-terminal-1573260324-513399929
+  [RES_NAME] xfce4-terminal
+  [RES_CLASS] Xfce4-terminal
+  [WM_NAME] Terminal - gjohn010@sledge:~/cs061/assignments/assn4
+  [WM_COMMAND] (1) "xfce4-terminal"
+  [GEOMETRY] (3,60,814,483)
+  [GEOMETRY-MAXIMIZED] (3,60,814,483)
+  [SCREEN] 0
+  [DESK] 0
+  [FLAGS] 0x10000
+[CLIENT] 0x2000006
+  [CLIENT_LEADER] 0x2000001
+  [RES_NAME] evince
+  [RES_CLASS] Evince
+  [WM_NAME] Programming assignment 2.pdf
+  [WM_COMMAND] (1) "evince"
+  [GEOMETRY] (544,95,725,656)
+  [GEOMETRY-MAXIMIZED] (544,95,725,656)
+  [SCREEN] 0
+  [DESK] 0
+  [FLAGS] 0x10000
+[CLIENT] 0xc00003
+  [CLIENT_LEADER] 0xc00001
+  [WINDOW_ROLE] Thunar-1573290662-3275423138
+  [RES_NAME] Thunar
+  [RES_CLASS] Thunar
+  [WM_NAME] assn2 - File Manager
+  [WM_COMMAND] (1) "Thunar"
+  [GEOMETRY] (774,268,640,480)
+  [GEOMETRY-MAXIMIZED] (797,268,640,480)
+  [SCREEN] 0
+  [DESK] 0
+  [FLAGS] 0x10000
