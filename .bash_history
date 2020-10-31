@@ -738,3 +738,27 @@ vim syscall.c
 make qemu-nox-gdb
 vim sysproc.c
 make qemu-nox-gdb
+cd xv6/
+make qemu-nox-gdb
+vim test.c 
+make qemu-nox-gdb
+vim test.c 
+make qemu-nox-gdb
+vim test.c 
+make qemu-nox-gdb
+vim test.
+vim test.c
+make qemu-nox-gdb
+vim syscall.h
+proc.c
+vim proc.c
+ls
+make clean
+make qemu-nox-gdb
+vim test.c
+vim user.h
+vim defs.h
+vim usys.S
+make clean
+make
+make qemu-nox-gdb

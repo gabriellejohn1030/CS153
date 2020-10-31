@@ -7,6 +7,9 @@
 
 # hlsearch on (H) or off (h):
 ~H
+# Last Substitute String:
+$
+
 # Command Line History (newest to oldest):
 :q!
 :wq
@@ -22,45 +25,52 @@
 # Input Line History (newest to oldest):
 
 # Registers:
-""1	LINE	0
-	}
+""0	LINE	0
+	void		mycall(void);
+"1	LINE	0
+	void		mycall(void);
 "2	LINE	0
-	  }
+	void		mycall(void);
 "3	LINE	0
-	    sleep(curproc, &ptable.lock);  
+	}
 "4	LINE	0
-	
+	  }
 "5	LINE	0
-	    }
+	    sleep(curproc, &ptable.lock);  
 "6	LINE	0
-	      return -1;
-"7	LINE	0
-	      release(&ptable.lock);
-"8	LINE	0
-	    if(!havekids || curproc->killed){
-"9	LINE	0
 	
+"7	LINE	0
+	    }
+"8	LINE	0
+	      return -1;
+"9	LINE	0
+	      release(&ptable.lock);
 "-	CHAR	0
 		mycall();
 
 # File marks:
-'0  1  2  ~/xv6/test.c
-'1  33  15  ~/xv6/usys.S
-'2  121  0  ~/xv6/defs.h
-'3  8  0  ~/xv6/user.h
-'4  129  2  ~/xv6/test.c
-'5  577  0  ~/xv6/proc.c
-'6  24  0  ~/xv6/syscall.h
-'7  11  9  ~/xv6/test.c
-'8  1  0  ~/xv6/test.
-'9  113  7  ~/xv6/test.c
+'0  1  0  ~/lab1/xv6
+'1  191  0  ~/xv6/defs.h
+'2  125  0  ~/xv6/defs.h
+'3  125  0  ~/lab1/xv6/defs.h
+'4  1  2  ~/xv6/test.c
+'5  33  15  ~/xv6/usys.S
+'6  121  0  ~/xv6/defs.h
+'7  8  0  ~/xv6/user.h
+'8  129  2  ~/xv6/test.c
+'9  577  0  ~/xv6/proc.c
 
 # Jumplist (newest first):
+-'  1  0  ~/lab1/xv6
+-'  191  0  ~/xv6/defs.h
+-'  125  0  ~/xv6/defs.h
+-'  121  0  ~/xv6/defs.h
+-'  125  0  ~/lab1/xv6/defs.h
+-'  1  0  ~/lab1/xv6/defs.h
 -'  1  2  ~/xv6/test.c
 -'  129  2  ~/xv6/test.c
 -'  33  15  ~/xv6/usys.S
 -'  9  4  ~/xv6/usys.S
--'  121  0  ~/xv6/defs.h
 -'  8  0  ~/xv6/user.h
 -'  28  0  ~/xv6/user.h
 -'  577  0  ~/xv6/proc.c
@@ -149,12 +159,21 @@
 -'  1  0  ~/xv6/zombie.asn
 -'  10  9  ~/xv6/ln.c
 -'  1  0  ~/xv6/ln.c
--'  1  0  ~/xv6/vectors.S
--'  1  0  ~/xv6/vector.S
--'  1  0  ~/xv6/users.h
--'  100  28  ~/xv6/defs.h
 
 # History of marks within files (newest to oldest):
+
+> ~/xv6/defs.h
+	"	191	0
+	^	121	30
+	.	125	0
+	+	120	27
+	+	121	29
+	+	125	0
+
+> ~/lab1/xv6/defs.h
+	"	125	0
+	.	125	0
+	+	125	0
 
 > ~/xv6/test.c
 	"	1	2
@@ -177,13 +196,6 @@
 	^	33	16
 	.	33	15
 	+	33	15
-
-> ~/xv6/defs.h
-	"	121	0
-	^	121	30
-	.	121	29
-	+	120	27
-	+	121	29
 
 > ~/xv6/user.h
 	"	8	0
@@ -416,9 +428,3 @@
 
 > ~/xv6/ide.c
 	"	66	0
-
-> ~/xv6/stressfs.c
-	"	46	7
-	^	46	8
-	.	46	7
-	+	46	7
